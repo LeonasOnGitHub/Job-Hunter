@@ -1,0 +1,45 @@
+profile:
+  name: "Mein Jobprofil"
+
+  locations:
+    - "Berlin"
+    - "Remote"
+
+  employment_types:
+    - "Vollzeit"
+
+  seniority:
+    - "Senior"
+    - "Lead"
+
+  preferred_titles:
+    - "Product Manager"
+    - "Senior Product Manager"
+    - "Product Lead"
+    - "Product Owner"
+
+  skills:
+    - "Product Management"
+    - "SaaS"
+    - "Python"
+    - "SQL"
+
+  industries:
+    - "Software"
+    - "SaaS"
+    - "Technologie"
+
+  excluded_terms:
+    - "Junior"
+    - "Praktikum"
+    - "Ausbildung"
+    - "Sales"
+    - "Vertrieb"
+    - "Recruiting"
+
+  salary_min: 70000
+
+matching:
+  minimum_score_for_llm: 45
+  minimum_score_for_notification: 75
+  maximum_llm_jobs_per_run: 30
