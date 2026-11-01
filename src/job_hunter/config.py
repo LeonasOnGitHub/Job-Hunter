@@ -25,6 +25,31 @@ def load_profile() -> dict:
         profile = yaml.safe_load(file)
 
     if not isinstance(profile, dict):
-        raise ValueError("profile.yaml muss ein YAML-Dictionary enthalten.")
+        raise ValueError(
+            "profile.yaml muss ein YAML-Dictionary enthalten."
+        )
 
     return profile
+
+
+def get_openai_api_key() -> str:
+    value = os.getenv("OPENAI_API_KEY")
+
+    if not value:
+        raise RuntimeError(
+            "OPENAI_API_KEY ist nicht konfiguriert."
+        )
+
+    return value
+
+
+def get_telegram_config() -> tuple[str, str]:
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    if not token or not chat_id:
+        raise RuntimeError(
+            "TELEGRAM_BOT_TOKEN oder TELEGRAM_CHAT_ID fehlt."
+        )
+
+    return token, chat_id
