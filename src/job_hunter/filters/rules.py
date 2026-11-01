@@ -55,36 +55,34 @@ def passes_basic_filter(
     # Location
     # ---------------------------------------------------------
 
-    locations = profile_data.get(
-        "locations",
-        [],
-    )
+    locations = profile_data.get("locations", [])
+
+    unknown_locations = {
+        "",
+        "nicht angegeben",
+        "unbekannt",
+        "unknown",
+    }
 
     if locations:
-        location_match = _contains_any(
-            job.location,
-            locations,
-        )
-
-        # Remote is accepted if Remote is one of the
-        # configured locations.
-        if (
-            not location_match
-            and job.remote
-            and "remote" in [
-                location.lower()
-                for location in locations
-            ]
-        ):
-            location_match = True
-
-        if not location_match:
-            return (
-                False,
-                ["Standort passt nicht."],
+        if job.location.strip().lower() in unknown_locations:
+            reasons.append(
+                "Standort unbekannt – muss noch geprüft werden."
             )
+        else:
+            location_match = _contains_any(job.location, locations)
 
-        reasons.append("Standort passt.")
+            if (
+                not location_match
+                and job.remote
+                and "remote" in [x.lower() for x in locations]
+            ):
+                location_match = True
+
+            if not location_match:
+                return False, ["Standort passt nicht."]
+
+            reasons.append("Standort passt.")
 
     # ---------------------------------------------------------
     # Salary
