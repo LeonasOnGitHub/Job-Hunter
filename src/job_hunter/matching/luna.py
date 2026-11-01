@@ -109,7 +109,7 @@ def match_with_luna(
     )
 
     response = client.responses.create(
-        model="gpt-5.6-luna",
+        model="gpt-6-luna",
         instructions=SYSTEM_PROMPT,
         input=json.dumps(
             payload,
