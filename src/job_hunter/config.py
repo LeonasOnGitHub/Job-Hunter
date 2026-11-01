@@ -1,49 +1,30 @@
+
 import os
 from pathlib import Path
-from typing import Any
 
 import yaml
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-PROFILE_PATH = PROJECT_ROOT / "config" / "profile.yaml"
+def load_profile() -> dict:
+    project_root = Path(__file__).resolve().parents[2]
+    default_path = project_root / "config" / "profile.yaml"
 
+    profile_path = Path(
+        os.getenv("JOB_HUNTER_PROFILE", str(default_path))
+    )
 
-def load_profile(path: Path = PROFILE_PATH) -> dict[str, Any]:
-    """Load the user profile from YAML."""
+    if not profile_path.is_absolute():
+        profile_path = project_root / profile_path
 
-    with path.open("r", encoding="utf-8") as file:
-        data = yaml.safe_load(file)
-
-    if not isinstance(data, dict):
-        raise ValueError("Profile configuration must be a YAML object.")
-
-    return data
-
-
-def get_openai_api_key() -> str:
-    value = os.getenv("OPENAI_API_KEY")
-
-    if not value:
-        raise RuntimeError(
-            "OPENAI_API_KEY is not configured."
+    if not profile_path.exists():
+        raise FileNotFoundError(
+            f"Profil nicht gefunden: {profile_path}"
         )
 
-    return value
+    with profile_path.open("r", encoding="utf-8") as file:
+        profile = yaml.safe_load(file)
 
+    if not isinstance(profile, dict):
+        raise ValueError("profile.yaml muss ein YAML-Dictionary enthalten.")
 
-def get_telegram_config() -> tuple[str, str]:
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-
-    if not token:
-        raise RuntimeError(
-            "TELEGRAM_BOT_TOKEN is not configured."
-        )
-
-    if not chat_id:
-        raise RuntimeError(
-            "TELEGRAM_CHAT_ID is not configured."
-        )
-
-    return token, chat_id
+    return profile
