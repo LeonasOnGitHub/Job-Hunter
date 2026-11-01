@@ -19,9 +19,7 @@ from job_hunter.matching.scoring import (
 from job_hunter.notifications.telegram import (
     send_telegram_message,
 )
-from job_hunter.sources.mock import (
-    fetch_jobs,
-)
+from job_hunter.sources.gmx_mail import fetch_gmx_alert_jobs
 
 
 logging.basicConfig(
@@ -45,7 +43,7 @@ def main() -> None:
     # 1. Fetch
     # ---------------------------------------------------------
 
-    jobs = fetch_jobs()
+    jobs = fetch_gmx_alert_jobs()
 
     logger.info(
         "Fetched %d jobs.",
