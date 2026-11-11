@@ -9,7 +9,7 @@ def _format_message(
 ) -> str:
 
     lines = [
-        "🟢 Neuer passender Job",
+        "🟢 Neue erfolgreiche Jagt",
         "",
         f"{result.score:.0f}/100 — {job.title}",
         "",
@@ -55,10 +55,8 @@ def _format_message(
                 "⚠️ Zu beachten:",
             ]
         )
-
         for concern in result.concerns:
             lines.append(f"• {concern}")
-
     lines.extend(
         [
             "",
