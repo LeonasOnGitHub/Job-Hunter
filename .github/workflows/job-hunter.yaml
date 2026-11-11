@@ -28,7 +28,11 @@ jobs:
           python-version: "3.13"
 
       - name: Install package
-        run: pip install  ".[dev]"
+        run: pip install -e ".[dev]"
+
+      - name: Verify configuration imports
+        run: |
+          python -c "import job_hunter.config as c; print('Config path:', c.__file__); print('get_openai_api_key:', hasattr(c, 'get_openai_api_key')); print('get_telegram_config:', hasattr(c, 'get_telegram_config')); print('load_profile:', hasattr(c, 'load_profile'))"
 
       - name: Run tests
         run: pytest
