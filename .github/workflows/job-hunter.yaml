@@ -40,6 +40,32 @@ jobs:
 
       - name: Run tests
         run: pytest
+        
+      - name: Diagnose runner network
+        run: |
+          python - <<'PY'
+          import hashlib
+          import urllib.request
+
+          endpoints = {
+              "IPv4": "https://api.ipify.org",
+              "IPv6": "https://api6.ipify.org",
+          }
+
+          for label, url in endpoints.items():
+              try:
+                  with urllib.request.urlopen(url, timeout=10) as response:
+                      ip = response.read().decode().strip()
+
+                  fingerprint = hashlib.sha256(
+                      ip.encode()
+                  ).hexdigest()[:12]
+
+                  print(f"{label} fingerprint: {fingerprint}")
+
+              except Exception as exc:
+                  print(f"{label} unavailable: {type(exc).__name__}")
+          PY
 
       - name: Run Job Hunter
         env:
