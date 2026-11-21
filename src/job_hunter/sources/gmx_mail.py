@@ -42,6 +42,7 @@ JOB_URL_MARKERS = (
     "/position/",
     "/career/",
     "jobdetails",
+    "/rc/clk",
 )
 
 IGNORED_LINK_TEXT = {
@@ -144,6 +145,7 @@ def _extract_body(message) -> tuple[str, list[tuple[str, str]]]:
             payload = part.get_payload(decode=True)
             if not payload:
                 continue
+
             content = payload.decode(
                 part.get_content_charset() or "utf-8",
                 errors="replace",
@@ -152,19 +154,30 @@ def _extract_body(message) -> tuple[str, list[tuple[str, str]]]:
         if content_type == "text/plain":
             plain_text += "\n" + content
 
+            # URLs auch aus dem Klartext extrahieren.
+            for url in re.findall(r"https?://[^\s<>\"']+", content):
+                links.append((url.rstrip(".,);"), ""))
+
         elif content_type == "text/html":
             parser = MailHTMLParser()
             parser.feed(content)
+
             html_text += "\n" + parser.text
             links.extend(parser.links)
 
     body = plain_text.strip() or html_text.strip()
 
-    if not links:
-        for url in re.findall(r"https?://[^\s<>\"']+", body):
-            links.append((url.rstrip(".,);"), ""))
+    # Doppelte Links entfernen.
+    unique_links = {}
+    for url, anchor_text in links:
+        url = url.strip()
+        if url:
+            unique_links[url] = anchor_text
 
-    return body, links
+    return body, [
+        (url, anchor_text)
+        for url, anchor_text in unique_links.items()
+    ]
 
 
 def _detect_source(sender: str, subject: str, body: str) -> str | None:
@@ -221,11 +234,25 @@ def _is_job_link(url: str, anchor_text: str) -> bool:
     if text in IGNORED_LINK_TEXT:
         return False
 
-    if any(marker in url.lower() for marker in JOB_URL_MARKERS):
+    url_lower = url.lower()
+
+    # Allgemeine bekannte Job-URL-Muster.
+    if any(marker in url_lower for marker in JOB_URL_MARKERS):
         return True
 
-    return False
+    # Indeed verwendet häufig Job-IDs im Parameter "jk".
+    hostname = (parts.hostname or "").lower()
 
+    if (
+        hostname.endswith("indeed.com")
+        or hostname.endswith("indeed.de")
+    ):
+        query_params = dict(parse_qsl(parts.query))
+
+        if query_params.get("jk"):
+            return True
+
+    return False
 
 def _email_date(message) -> datetime | None:
     try:
