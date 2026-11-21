@@ -67,11 +67,36 @@ jobs:
                   print(f"{label} unavailable: {type(exc).__name__}")
           PY
 
-      - name: Run Job Hunter
+      - name: Test GMX IMAP connection
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GMX_EMAIL: ${{ secrets.GMX_EMAIL }}
           GMX_PASSWORD: ${{ secrets.GMX_PASSWORD }}
-        run: python -m job_hunter
+        run: |
+          python - <<'PY'
+          import imaplib
+          import os
+
+          print("GMX email configured:", bool(os.getenv("GMX_EMAIL")))
+          print("GMX password configured:", bool(os.getenv("GMX_PASSWORD")))
+
+          try:
+              mail = imaplib.IMAP4_SSL("imap.gmx.net", 993, timeout=30)
+              mail.login(
+                  os.environ["GMX_EMAIL"],
+                  os.environ["GMX_PASSWORD"]
+              )
+              print("GMX IMAP login successful!")
+              mail.logout()
+          except Exception as e:
+              print("GMX IMAP login failed:", type(e).__name__, str(e))
+              raise
+          PY
+
+            - name: Run Job Hunter
+              env:
+                OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+                TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+                GMX_EMAIL: ${{ secrets.GMX_EMAIL }}
+                GMX_PASSWORD: ${{ secrets.GMX_PASSWORD }}
+              run: python -m job_hunter
