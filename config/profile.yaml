@@ -21,23 +21,31 @@ profile:
   skills:
     - "Product Management"
     - "SaaS"
-    - "Python"
+    - "JavaScript"
+    - "Java"
+    - "TypeScript"
     - "SQL"
-
-  industries:
-    - "Software"
-    - "SaaS"
-    - "Technologie"
+    - "React"
+    - "Node.js"
+    - "Agile"
+    - "Scrum"
+    - "Kanban"
+    - "Jira"
+    - "Angular"
+    - "Kotlin"
+    - "Spring Boot"
+    - "REST APIs"
+    - "Git"
 
   excluded_terms:
-    - "Junior"
+    - "Senior"
     - "Praktikum"
     - "Ausbildung"
     - "Sales"
     - "Vertrieb"
     - "Recruiting"
 
-  salary_min: 70000
+  salary_min: 50000
 
 matching:
   minimum_score_for_llm: 45
