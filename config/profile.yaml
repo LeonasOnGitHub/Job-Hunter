@@ -9,14 +9,17 @@ profile:
     - "Vollzeit"
 
   seniority:
-    - "Senior"
-    - "Lead"
+    - "Junior"
 
   preferred_titles:
+    - "Fullstack Developer"
+    - "Software Engineer"
+    - "Java Developer"
+    - "Backend Developer"
     - "Product Manager"
-    - "Senior Product Manager"
-    - "Product Lead"
-    - "Product Owner"
+    - "Junior"
+    - "Softwareentwickler"
+ 
 
   skills:
     - "Product Management"
