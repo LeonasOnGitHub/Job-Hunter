@@ -17,6 +17,7 @@ profile:
     - "Java Developer"
     - "Backend Developer"
     - "Product Manager"
+    - "Product Owner"
     - "Junior"
     - "Softwareentwickler"
  
@@ -39,6 +40,8 @@ profile:
     - "Spring Boot"
     - "REST APIs"
     - "Git"
+    - "Kommunikation"
+    - "Stakeholder Management"
 
   excluded_terms:
     - "Senior"
